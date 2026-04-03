@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>CIET Admin Dashboard</title>
+    <link rel="icon" type="image/png" href="assets/ciet-logo.img.png">
+
+    <!-- Socket.io -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.2/socket.io.min.js"></script>
+
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/admin.css">
+</head>
+
+<body>
+    <div class="admin-layout">
+        <aside class="admin-sidebar">
+            <div class="brand">CIET Admin</div>
+            <button onclick="switchTab('monitoring')" class="admin-tab active" id="tab-monitoring">Live
+                Monitoring</button>
+            <button onclick="switchTab('analytics')" class="admin-tab" id="tab-analytics">Analytics</button>
+            <button onclick="logoutAdmin()" class="logout-btn">Logout</button>
+        </aside>
+
+        <main class="admin-content">
+            <!-- LIVE MONITORING VIEW -->
+            <section id="view-monitoring" class="admin-view active">
+                <div class="admin-header">
+                    <h2>Live Student Monitoring 🔴</h2>
+                    <p>Real-time view of students currently taking assessments.</p>
+                </div>
+
+                <div class="admin-stats-row">
+                    <div class="admin-stat-card">
+                        <h3 id="live-count">0</h3>
+                        <p>Active Students</p>
+                    </div>
+                </div>
+
+                <div class="admin-card">
+                    <h3>Current Sessions</h3>
+                    <div class="admin-table-wrapper">
+                        <table class="admin-table">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Roll / Dept</th>
+                                    <th>Assessment Type</th>
+                                    <th>Time Elapsed</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="live-table-body">
+                                <tr>
+                                    <td colspan="5" style="text-align: center; color: #666;">Waiting for real-time
+                                        connection...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ANALYTICS VIEW -->
+            <section id="view-analytics" class="admin-view">
+                <div class="admin-header">
+                    <h2>Attempt Analytics 📊</h2>
+                    <p>System-wide performance metrics and aggregation.</p>
+                    <button class="admin-btn-primary" style="margin-top:10px" onclick="loadAnalytics()">Refresh
+                        Data</button>
+                </div>
+
+                <div class="admin-stats-row">
+                    <div class="admin-stat-card">
+                        <h3 id="total-attempts">-</h3>
+                        <p>Total Attempts</p>
+                    </div>
+                    <div class="admin-stat-card">
+                        <h3 id="avg-score">-</h3>
+                        <p>Average Score</p>
+                    </div>
+                    <div class="admin-stat-card">
+                        <h3 id="total-certs">-</h3>
+                        <p>Certificates Issued</p>
+                    </div>
+                </div>
+
+                <div class="admin-grid">
+                    <div class="admin-card">
+                        <h3>Department Performance Comparison</h3>
+                        <table class="admin-table">
+                            <thead>
+                                <tr>
+                                    <th>Department</th>
+                                    <th>Avg Score</th>
+                                    <th>Total Attempts</th>
+                                </tr>
+                            </thead>
+                            <tbody id="dept-stats-body">
+                                <tr>
+                                    <td colspan="3">Loading...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="admin-card">
+                        <h3>Top Performing Students</h3>
+                        <ul class="admin-list" id="top-students-list">
+                            <li>Loading...</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/api.js"></script>
+    <script src="js/pages/admin.js"></script>
+</body>
+
+</html>

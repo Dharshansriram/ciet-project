@@ -1,0 +1,107 @@
+.certificates-page {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    animation: fadeIn 0.45s ease;
+}
+
+/* TOP HERO */
+.cert-top {
+    padding: 20px 24px;
+    border-radius: 18px;
+    background: linear-gradient(135deg, #162040 0%, #1a2750 60%, #162040 100%);
+}
+.cert-hero h2 { margin-bottom: 6px; font-size: 22px; color: #f0d060; }
+.cert-hero p  { color: #8899b8; margin-bottom: 0; line-height: 1.4; font-size: 14px; }
+.cert-hero p strong { color: #f0d060; }
+
+/* GRID */
+.cert-tracks-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+
+/* CARD */
+.cert-track-card {
+    background: white;
+    border-radius: 18px;
+    box-shadow: var(--shadow-soft);
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    transition: transform .2s ease;
+}
+.cert-track-card:hover { transform: translateY(-3px); }
+
+.track-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.track-title { display: flex; gap: 10px; align-items: center; }
+.track-title h3 { font-size: 15px; color: #1f2937; }
+.track-icon { font-size: 18px; }
+.track-chip {
+    padding: 5px 10px; border-radius: 999px;
+    font-size: 12px; font-weight: 600;
+    background: #eef2ff; color: #4338ca;
+}
+.tier-body { padding: 4px 0 0; }
+
+/* BUTTONS */
+.cert-primary-btn {
+    border: none; padding: 10px 14px; border-radius: 12px; cursor: pointer;
+    background: linear-gradient(90deg, #4f46e5, #6366f1);
+    color: white; font-size: 13px; font-weight: 600;
+    transition: transform .2s, opacity .2s;
+}
+.cert-primary-btn:hover { transform: translateY(-1px); opacity: .9; }
+
+/* MODAL */
+.cert-modal {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.75);
+    backdrop-filter: blur(6px);
+    display: flex; justify-content: center; align-items: center;
+    z-index: 9999;
+}
+.cert-close-btn {
+    position: absolute; top: 12px; right: 14px;
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.15);
+    color: #e2e8f0; width: 32px; height: 32px;
+    border-radius: 50%; font-size: 16px; cursor: pointer; line-height: 1;
+}
+
+@keyframes popIn {
+    0%   { transform: scale(0.92); opacity: 0.4; }
+    100% { transform: scale(1);   opacity: 1; }
+}
+
+@media (max-width: 768px) {
+    .cert-tracks-grid { grid-template-columns: 1fr; }
+}
+
+/* ═══════════════════════════════════
+   RESPONSIVE — CERTIFICATES
+═══════════════════════════════════ */
+
+/* Tablet (769px – 1024px) */
+@media (min-width: 769px) and (max-width: 1024px) {
+    .cert-tracks-grid { grid-template-columns: 1fr 1fr; }
+}
+
+/* Mobile (≤768px) — already has grid: 1col, add more fixes */
+@media (max-width: 768px) {
+    .cert-top { padding: 16px 18px; }
+    .cert-hero h2 { font-size: 18px; }
+    .cert-track-card { padding: 14px; }
+}
+
+/* Modal responsive */
+@media (max-width: 600px) {
+    #certModal > div { padding: 14px !important; }
+    #certModal canvas { border-radius: 8px !important; }
+}

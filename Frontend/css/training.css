@@ -1,0 +1,183 @@
+.training {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+/* HEADER */
+.training-header {
+    background: linear-gradient(135deg, #162040 0%, #1a2750 60%, #162040 100%);
+    padding: 30px;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-soft);
+    animation: slideUp 0.6s ease;
+}
+
+.training-header h2 {
+    color: #f0d060;
+}
+
+.training-header p {
+    color: #8899b8;
+}
+
+/* SKILL GRID */
+.training-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 25px;
+}
+
+/* SKILL CARD */
+.training-card {
+    background: var(--card);
+    padding: 28px;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-soft);
+    transition: transform 0.3s ease;
+}
+
+.training-card:hover {
+    transform: translateY(-8px);
+}
+
+.training-card h3 {
+    margin-bottom: 10px;
+}
+
+.training-card p {
+    margin-bottom: 20px;
+    color: #555;
+}
+
+/* ACTION BUTTONS */
+.training-actions {
+    display: flex;
+    gap: 12px;
+}
+
+.training-actions button {
+    flex: 1;
+    padding: 12px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.practice-btn {
+    background: linear-gradient(135deg, #162040, #1a2750);
+    color: #f0d060;
+    border: 1px solid rgba(201,162,39,0.3);
+    font-weight: 600;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.practice-btn:hover {
+    opacity: 0.9;
+    transform: translateY(-2px);
+}
+
+.workout-btn {
+    background: linear-gradient(135deg, #c9a227, #a07c1a);
+    color: #0d1b36;
+    font-weight: 700;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.workout-btn:hover {
+    opacity: 0.9;
+    transform: translateY(-2px);
+}
+
+/* ── DSA Under-Construction Notice ───────────── */
+.training-card.dsa-disabled {
+    opacity: 0.75;
+    position: relative;
+}
+
+.construction-tag {
+    font-size: 1.1rem;
+}
+
+.dsa-notice {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    background: linear-gradient(135deg, rgba(245, 158, 11, .12), rgba(217, 119, 6, .08));
+    border: 1px solid rgba(245, 158, 11, .35);
+    border-radius: 10px;
+    padding: 14px 16px;
+    width: 100%;
+}
+
+.dsa-notice>span {
+    font-size: 1.8rem;
+    flex-shrink: 0;
+}
+
+.dsa-notice b {
+    display: block;
+    color: #f59e0b;
+    font-size: 0.9rem;
+}
+
+.dsa-notice p {
+    margin: 2px 0 0;
+    font-size: 0.8rem;
+    color: #92400e;
+}
+/* ═══════════════════════════════════
+   RESPONSIVE — TRAINING
+═══════════════════════════════════ */
+
+/* Mobile (≤768px) */
+@media (max-width: 768px) {
+    .training-header { padding: 20px 18px; }
+    .training-header h2 { font-size: 18px; }
+    .training-grid { grid-template-columns: 1fr; gap: 16px; }
+    .training-card { padding: 22px 18px; }
+    .training-actions { flex-direction: column; gap: 10px; }
+    .training-actions button { padding: 13px; font-size: 15px; }
+}
+
+/* ── DSA Training Card Additions ─── */
+.card-icon { font-size: 2rem; margin-bottom: 8px; }
+.new-tag {
+  font-size: 0.65rem;
+  background: linear-gradient(135deg, #4f46e5, #7c3aed);
+  color: #fff;
+  padding: 2px 7px;
+  border-radius: 10px;
+  vertical-align: middle;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+.card-meta { display: flex; flex-wrap: wrap; gap: 6px; margin: 10px 0; }
+.meta-tag {
+  font-size: 0.7rem;
+  background: rgba(79,70,229,0.1);
+  color: #6366f1;
+  padding: 3px 8px;
+  border-radius: 20px;
+  font-weight: 600;
+}
+.dsa-card { border: 1px solid rgba(99,102,241,0.3); }
+.dsa-card:hover { border-color: rgba(99,102,241,0.6); }
+.dsa-phases-mini { display: flex; flex-wrap: wrap; gap: 6px; margin: 12px 0; }
+.phase-chip {
+  font-size: 0.7rem;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.12);
+  padding: 3px 8px;
+  border-radius: 4px;
+  color: var(--text-secondary, #a1a1aa);
+}
+.dsa-btn {
+  background: linear-gradient(135deg, #4f46e5, #6366f1) !important;
+  color: #fff !important;
+  font-size: 1rem;
+  padding: 12px 24px;
+  width: 100%;
+  border-radius: 12px;
+}

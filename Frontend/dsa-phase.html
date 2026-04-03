@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <link rel="stylesheet" href="css/tokens.css"/>
+  <title>DSA Practice | CIET Placement</title>
+  <link rel="stylesheet" href="css/dsa-phase.css"/>
+  <!--
+    Monaco Editor loader — loaded once, never reloaded.
+    Sortable.js for drag-drop in jumbled phase.
+  -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.44.0/min/vs/loader.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.2/Sortable.min.js"></script>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     TOPBAR — persistent
+════════════════════════════════════════════════════════════════ -->
+<header class="topbar">
+  <button class="back-btn" onclick="history.back()">← Back</button>
+  <nav class="breadcrumb">
+    <span id="bcTopic" class="bc-topic"></span>
+    <span class="bc-sep">›</span>
+    <span id="bcSubtopic"></span>
+    <span class="bc-sep">›</span>
+    <span id="bcPhase" class="bc-phase"></span>
+  </nav>
+  <div class="topbar-right">
+    <span id="qProgress" class="q-progress-badge"></span>
+    <button class="btn-icon" title="Toggle Theme" onclick="toggleTheme()">🌙</button>
+  </div>
+</header>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     QUESTION NAV — numbered dots per question
+════════════════════════════════════════════════════════════════ -->
+<nav class="q-nav" id="qNav" aria-label="Question navigation"></nav>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     MAIN SPLIT LAYOUT
+     Left  → Question description (scrollable)
+     Right → Interactive phase content
+════════════════════════════════════════════════════════════════ -->
+<div class="split-layout">
+
+  <!-- LEFT PANEL: question description + test cases -->
+  <aside class="left-panel" id="leftPanel" aria-label="Question description">
+    <div class="lp-scroll" id="lpScroll">
+      <!-- Populated by JS: renderLeftPanel() -->
+    </div>
+  </aside>
+
+  <!-- RESIZE HANDLE -->
+  <div class="resize-handle" id="resizeHandle" aria-hidden="true"></div>
+
+  <!-- RIGHT PANEL: phase-specific interactive content -->
+  <section class="right-panel" id="rightPanel" aria-label="Practice area">
+
+    <!--
+      ╔══════════════════════════════════════════════════════════╗
+      ║  CODE EDITOR REGION                                      ║
+      ║                                                          ║
+      ║  CRITICAL: This block is ALWAYS in the DOM.             ║
+      ║  We show/hide it with CSS display:none, never           ║
+      ║  destroy it. Monaco mounts once to #monacoContainer     ║
+      ║  and stays mounted for the lifetime of the page.        ║
+      ║                                                          ║
+      ║  Destroying the DOM node Monaco is mounted to           ║
+      ║  causes the editor to detach and crash on re-render.    ║
+      ╚══════════════════════════════════════════════════════════╝
+    -->
+    <div id="codeEditorRegion" class="region hidden">
+      <!-- Toolbar: language picker + action buttons -->
+      <div class="editor-topbar" id="editorTopbar">
+        <div class="editor-left">
+          <select id="langSelect" class="lang-select" aria-label="Programming language">
+            <option value="python">Python 3</option>
+            <option value="javascript">JavaScript (Node)</option>
+            <option value="c">C (GCC)</option>
+          </select>
+          <button class="btn btn-ghost sm" id="resetBtn" title="Reset to starter code">↺ Reset</button>
+        </div>
+        <div class="editor-right">
+          <button class="btn btn-run" id="runBtn">▶ Run</button>
+          <button class="btn btn-primary" id="submitBtn">✔ Submit</button>
+        </div>
+      </div>
+
+      <!-- Monaco mounts here — this div must NEVER be removed -->
+      <div id="monacoContainer" aria-label="Code editor"></div>
+
+      <!-- Output panel below editor -->
+      <div class="output-panel" id="outputPanel">
+        <div class="output-header">
+          <span class="output-title">Test Results</span>
+          <button class="btn-icon sm" id="clearOutputBtn" title="Clear output">✕</button>
+        </div>
+        <div class="output-body" id="outputBody">
+          <span class="output-hint">Click ▶ Run to test against visible cases, or ✔ Submit for full verdict</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Objective MCQ region -->
+    <div id="objectiveRegion" class="region hidden">
+      <!-- Populated by renderObjective() -->
+    </div>
+
+    <!-- Jumbled code region -->
+    <div id="jumbledRegion" class="region hidden">
+      <!-- Populated by renderJumbled() -->
+    </div>
+
+    <!-- Missing code region -->
+    <div id="missingRegion" class="region hidden">
+      <!-- Populated by renderMissing() -->
+    </div>
+
+    <!-- Optimize region -->
+    <div id="optimizeRegion" class="region hidden">
+      <!-- Populated by renderOptimize() -->
+    </div>
+
+  </section>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     BOTTOM BAR — prev / progress / next
+════════════════════════════════════════════════════════════════ -->
+<footer class="bottom-bar">
+  <button class="btn btn-ghost" id="prevBtn" onclick="prevQuestion()" disabled>← Previous</button>
+  <div class="progress-track" id="progressTrack" aria-label="Progress"></div>
+  <button class="btn btn-primary" id="nextBtn" onclick="nextQuestion()">Next →</button>
+</footer>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     TOAST NOTIFICATION (aria-live for accessibility)
+════════════════════════════════════════════════════════════════ -->
+<div id="toast" class="toast hidden" role="alert" aria-live="polite"></div>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     COMPLETION MODAL
+════════════════════════════════════════════════════════════════ -->
+<div id="completionModal" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+  <div class="modal-box">
+    <div class="modal-emoji" id="modalEmoji">🎉</div>
+    <h2 id="modalTitle" class="modal-title">Section Complete!</h2>
+    <p  id="modalBody"  class="modal-body"></p>
+    <div class="score-display" id="scoreDisplay"></div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost"    onclick="closeModal()">Review Answers</button>
+      <button class="btn btn-primary"  onclick="goNextPhase()">Next Phase →</button>
+    </div>
+  </div>
+</div>
+
+<script src="js/dsa-phase.js"></script>
+</body>
+</html>
