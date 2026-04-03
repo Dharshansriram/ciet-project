@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <link rel="stylesheet" href="css/tokens.css"/>
+  <title>Answer Sheet | CIET Admin</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+    :root {
+      --bg:#0d1117; --surface:#161b22; --panel:#1c2128; --border:#30363d;
+      --text:#e6edf3; --muted:#8b949e; --accent:#2f81f7;
+      --green:#3fb950; --red:#f85149; --yellow:#d29922; --purple:#bc8cff;
+      --font:'Inter',sans-serif; --mono:'JetBrains Mono',monospace;
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:var(--font);background:var(--bg);color:var(--text);line-height:1.6;padding:24px}
+    h1{font-size:1.5rem;font-weight:800;margin-bottom:4px}
+    .subtitle{color:var(--muted);font-size:0.875rem;margin-bottom:24px}
+
+    /* Controls */
+    .controls{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:24px;align-items:center}
+    .controls select,.controls input{
+      background:var(--panel);color:var(--text);border:1px solid var(--border);
+      padding:7px 12px;border-radius:8px;font-size:0.875rem;font-family:var(--font);outline:none;
+    }
+    .controls select:focus,.controls input:focus{border-color:var(--accent)}
+    .btn{padding:7px 16px;border-radius:8px;font-size:0.875rem;font-weight:600;cursor:pointer;border:none;font-family:var(--font)}
+    .btn-primary{background:var(--accent);color:#fff}
+    .btn-print{background:rgba(63,185,80,0.12);color:var(--green);border:1px solid rgba(63,185,80,0.3)}
+
+    /* Stats bar */
+    .stats{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:24px}
+    .stat{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px 18px;text-align:center;min-width:90px}
+    .stat-num{font-size:1.4rem;font-weight:800;color:var(--accent)}
+    .stat-label{font-size:0.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;margin-top:2px}
+
+    /* Answer cards */
+    #sheet{display:flex;flex-direction:column;gap:12px}
+    .answer-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden}
+    .card-header{display:flex;align-items:center;gap:10px;padding:12px 16px;border-bottom:1px solid var(--border);cursor:pointer;user-select:none}
+    .card-header:hover{background:var(--panel)}
+    .phase-badge{font-size:0.65rem;font-weight:700;padding:2px 8px;border-radius:20px;text-transform:uppercase;letter-spacing:0.5px;flex-shrink:0}
+    .ph-objective  {background:rgba(47,129,247,0.12);color:var(--accent)}
+    .ph-codeEditor {background:rgba(63,185,80,0.12);color:var(--green)}
+    .ph-jumbledCode{background:rgba(210,153,34,0.12);color:var(--yellow)}
+    .ph-missingCode{background:rgba(188,140,255,0.12);color:var(--purple)}
+    .ph-optimize   {background:rgba(248,81,73,0.12);color:var(--red)}
+    .ph-aptitude   {background:rgba(240,136,62,0.12);color:var(--yellow)}
+    .card-id{font-family:var(--mono);font-size:0.75rem;color:var(--muted);flex-shrink:0}
+    .card-title{flex:1;font-size:0.9rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .expand-arrow{color:var(--muted);transition:transform 0.2s;flex-shrink:0}
+    .answer-card.open .expand-arrow{transform:rotate(90deg)}
+
+    .card-body{padding:16px;display:none}
+    .answer-card.open .card-body{display:block}
+
+    .answer-row{display:flex;gap:8px;margin-bottom:8px;align-items:flex-start}
+    .answer-label{font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--muted);min-width:90px;flex-shrink:0;padding-top:2px}
+    .answer-val{font-size:0.875rem;color:var(--text);line-height:1.6}
+    .answer-val.correct{color:var(--green);font-weight:700}
+    .answer-val.code{font-family:var(--mono);font-size:0.8rem;background:var(--panel);border:1px solid var(--border);border-radius:6px;padding:10px 12px;white-space:pre-wrap;word-break:break-all;display:block;margin-top:4px}
+    .option-item{padding:4px 0;color:var(--muted)}
+    .option-item.correct-opt{color:var(--green);font-weight:700}
+
+    .blank-grid{display:flex;flex-wrap:wrap;gap:8px;margin-top:4px}
+    .blank-chip{background:var(--panel);border:1px solid var(--green);border-radius:6px;padding:4px 10px;font-family:var(--mono);font-size:0.82rem;color:var(--green)}
+
+    .tc-table{width:100%;border-collapse:collapse;font-size:0.8rem;margin-top:4px;font-family:var(--mono)}
+    .tc-table th{background:var(--panel);padding:6px 10px;text-align:left;border:1px solid var(--border);color:var(--muted);font-weight:600}
+    .tc-table td{padding:6px 10px;border:1px solid var(--border);vertical-align:top;white-space:pre-wrap;word-break:break-all}
+
+    .lang-tabs{display:flex;gap:6px;margin-bottom:8px;flex-wrap:wrap}
+    .lang-tab{padding:4px 10px;border-radius:6px;border:1px solid var(--border);font-size:0.78rem;font-weight:600;cursor:pointer;font-family:var(--font);background:var(--panel);color:var(--muted)}
+    .lang-tab.active{border-color:var(--accent);color:var(--accent);background:rgba(47,129,247,0.1)}
+
+    .empty-state{text-align:center;padding:60px;color:var(--muted)}
+
+    /* Print styles */
+    @media print {
+      body{background:#fff;color:#000;padding:12px}
+      .controls,.stats{display:none}
+      .answer-card{border:1px solid #ccc;break-inside:avoid;margin-bottom:12px}
+      .card-body{display:block!important}
+      .card-header{background:#f5f5f5;cursor:default}
+      .answer-val.code{background:#f5f5f5;border:1px solid #ddd;color:#000}
+      .blank-chip{background:#e8f5e9;border:1px solid #4caf50;color:#2e7d32}
+    }
+  </style>
+</head>
+<body>
+
+<h1>📋 Answer Sheet</h1>
+<p class="subtitle">Admin verification sheet — all correct answers for DSA and Aptitude questions</p>
+
+<!-- Controls -->
+<div class="controls">
+  <select id="filterType">
+    <option value="all">All Types</option>
+    <option value="dsa">DSA Only</option>
+    <option value="aptitude">Aptitude Only</option>
+  </select>
+  <select id="filterPhase">
+    <option value="all">All Phases</option>
+    <option value="objective">Objective MCQ</option>
+    <option value="codeEditor">Code Editor</option>
+    <option value="jumbledCode">Jumbled Code</option>
+    <option value="missingCode">Fill Blanks</option>
+    <option value="optimize">Optimize</option>
+  </select>
+  <select id="filterTopic">
+    <option value="all">All Topics</option>
+  </select>
+  <input type="text" id="searchInput" placeholder="Search questions…" style="min-width:200px"/>
+  <button class="btn btn-primary" onclick="applyFilters()">Filter</button>
+  <button class="btn btn-print" onclick="window.print()">🖨️ Print</button>
+</div>
+
+<!-- Stats -->
+<div class="stats" id="statsBar"></div>
+
+<!-- Answer Sheet -->
+<div id="sheet"><div class="empty-state">Loading answer sheet…</div></div>
+
+<script>
+"use strict";
+
+const API = "http://localhost:5000";
+let allItems = [];
+
+document.addEventListener("DOMContentLoaded", async () => {
+  await loadSheet();
+  document.getElementById("searchInput").addEventListener("input", applyFilters);
+  document.getElementById("filterType").addEventListener("change", applyFilters);
+  document.getElementById("filterPhase").addEventListener("change", applyFilters);
+  document.getElementById("filterTopic").addEventListener("change", applyFilters);
+});
+
+async function loadSheet() {
+  // Try authenticated endpoint first; fallback to local generation
+  let sheet = null;
+  try {
+    const token = localStorage.getItem("ciet_token");
+    const res   = await fetch(`${API}/api/admin/answer-sheet`, {
+      headers: token ? { Authorization: `Bearer ${token}` } : {},
+    });
+    if (res.ok) {
+      const data = await res.json();
+      if (data.success) sheet = data.sheet;
+    }
+  } catch (_) {}
+
+  if (!sheet) {
+    document.getElementById("sheet").innerHTML =
+      `<div class="empty-state">⚠️ Backend not connected.<br><small>Run: cd Backend && npm run dev</small></div>`;
+    return;
+  }
+
+  // Combine DSA + Aptitude into flat list
+  allItems = [
+    ...sheet.dsa.map(q => ({ ...q, _type: "dsa" })),
+    ...sheet.aptitude.map(q => ({ ...q, _type: "aptitude", phase: "aptitude" })),
+  ];
+
+  // Populate topic filter
+  const topics = [...new Set(allItems.map(q => q.topic))].sort();
+  const topicSel = document.getElementById("filterTopic");
+  topics.forEach(t => {
+    const opt = document.createElement("option");
+    opt.value = t; opt.textContent = t; topicSel.appendChild(opt);
+  });
+
+  // Render stats
+  renderStats(sheet.summary);
+  renderItems(allItems);
+}
+
+function renderStats(summary) {
+  const el = document.getElementById("statsBar");
+  const stats = [
+    { num: summary.dsa.total,      label: "DSA Total" },
+    { num: summary.dsa.objective,  label: "Objective" },
+    { num: summary.dsa.codeEditor, label: "Code Editor" },
+    { num: summary.dsa.jumbled,    label: "Jumbled" },
+    { num: summary.dsa.missing,    label: "Fill Blanks" },
+    { num: summary.aptitude.total, label: "Aptitude" },
+  ];
+  el.innerHTML = stats.map(s =>
+    `<div class="stat"><div class="stat-num">${s.num}</div><div class="stat-label">${s.label}</div></div>`
+  ).join("");
+}
+
+function applyFilters() {
+  const type    = document.getElementById("filterType").value;
+  const phase   = document.getElementById("filterPhase").value;
+  const topic   = document.getElementById("filterTopic").value;
+  const search  = document.getElementById("searchInput").value.toLowerCase();
+
+  let filtered = allItems.filter(q => {
+    if (type  !== "all" && q._type  !== type)  return false;
+    if (phase !== "all" && q.phase  !== phase) return false;
+    if (topic !== "all" && q.topic  !== topic) return false;
+    if (search) {
+      const text = `${q.id} ${q.title||""} ${q.question||""}`.toLowerCase();
+      if (!text.includes(search)) return false;
+    }
+    return true;
+  });
+
+  renderItems(filtered);
+}
+
+function renderItems(items) {
+  const container = document.getElementById("sheet");
+  if (!items.length) {
+    container.innerHTML = `<div class="empty-state">No questions match your filters.</div>`;
+    return;
+  }
+
+  container.innerHTML = items.map(q => buildCard(q)).join("");
+
+  // Wire expand/collapse
+  container.querySelectorAll(".card-header").forEach(h => {
+    h.addEventListener("click", () => h.closest(".answer-card").classList.toggle("open"));
+  });
+
+  // Wire language tabs in code questions
+  container.querySelectorAll(".lang-tab").forEach(tab => {
+    tab.addEventListener("click", () => {
+      const card  = tab.closest(".answer-card");
+      const lang  = tab.dataset.lang;
+      card.querySelectorAll(".lang-tab").forEach(t => t.classList.toggle("active", t.dataset.lang === lang));
+      card.querySelectorAll(".code-block").forEach(b => {
+        b.style.display = b.dataset.lang === lang ? "block" : "none";
+      });
+    });
+  });
+}
+
+function buildCard(q) {
+  const phaseClass = `ph-${q.phase}`;
+  const phaseLabel = {
+    objective:"Objective",codeEditor:"Code",jumbledCode:"Jumbled",
+    missingCode:"Fill Blanks",optimize:"Optimize",aptitude:"Aptitude"
+  }[q.phase] || q.phase;
+
+  let body = "";
+
+  if (q.phase === "objective" || q.phase === "aptitude") {
+    body += row("Question", esc(q.question));
+    const optHtml = (q.options||[]).map((opt, i) =>
+      `<div class="option-item ${i===q.answer?"correct-opt":""}">${["A","B","C","D"][i]}) ${esc(opt)} ${i===q.answer?"✅":""}</div>`
+    ).join("");
+    body += row("Options", optHtml, true);
+    body += row("Correct Answer", `<span class="correct">${["A","B","C","D"][q.answer]}) ${esc(q.answerText)}</span>`, true);
+    if (q.explanation) body += row("Explanation", esc(q.explanation));
+  }
+
+  else if (q.phase === "codeEditor") {
+    body += row("Title", esc(q.title||""));
+    const langs = Object.keys(q.solutionCode||{});
+    if (langs.length) {
+      const tabsHtml = langs.map((l,i) =>
+        `<button class="lang-tab ${i===0?"active":""}" data-lang="${l}">${l}</button>`
+      ).join("");
+      const codesHtml = langs.map((l,i) =>
+        `<pre class="answer-val code code-block" data-lang="${l}" style="${i>0?"display:none":""}">${esc(q.solutionCode[l])}</pre>`
+      ).join("");
+      body += row("Solution", `<div class="lang-tabs">${tabsHtml}</div>${codesHtml}`, true);
+    }
+    if (q.testCases?.length) {
+      const tcHtml = `<table class="tc-table">
+        <thead><tr><th>#</th><th>Input</th><th>Expected Output</th></tr></thead>
+        <tbody>${q.testCases.map((tc,i) =>
+          `<tr><td>${i+1}</td><td>${esc(tc.input)}</td><td>${esc(tc.expectedOutput)}</td></tr>`
+        ).join("")}</tbody>
+      </table>`;
+      body += row("Test Cases", tcHtml, true);
+    }
+  }
+
+  else if (q.phase === "jumbledCode") {
+    body += row("Correct Order", `<ol style="padding-left:16px;font-family:var(--mono);font-size:0.82rem">${
+      (q.orderedLines||[]).map(l => `<li style="padding:2px 0">${esc(l)}</li>`).join("")
+    }</ol>`, true);
+    body += row("Index Order", `<span class="answer-val code">[${q.correctOrder?.join(", ")}]</span>`, true);
+  }
+
+  else if (q.phase === "missingCode") {
+    const blanksHtml = `<div class="blank-grid">${
+      (q.blanks||[]).map((b,i) => `<span class="blank-chip">Blank ${i+1}: ${esc(b)}</span>`).join("")
+    }</div>`;
+    body += row("Correct Blanks", blanksHtml, true);
+    if (q.hints?.length) {
+      body += row("Hints", q.hints.map((h,i) => `<div style="margin-bottom:4px"><b>Blank ${i+1}:</b> ${esc(h)}</div>`).join(""), true);
+    }
+  }
+
+  else if (q.phase === "optimize") {
+    body += row("Optimal Complexity", `<span class="correct">${esc(q.optimalComplexity||"")}</span>`, true);
+    if (q.goodCode) body += row("Optimal Code", `<pre class="answer-val code">${esc(q.goodCode)}</pre>`, true);
+    if (q.explanation) body += row("Explanation", esc(q.explanation));
+  }
+
+  const title = q.title || q.question?.slice(0,60) || q.id;
+
+  return `<div class="answer-card">
+    <div class="card-header">
+      <span class="phase-badge ${phaseClass}">${phaseLabel}</span>
+      <span class="card-id">${q.id}</span>
+      <span class="card-title" title="${esc(title)}">${esc(title)}</span>
+      <span class="expand-arrow">▶</span>
+    </div>
+    <div class="card-body">
+      ${row("Topic", `${esc(q.topic)} › ${esc(q.subtopic||q.topic)}`)}
+      ${body}
+    </div>
+  </div>`;
+}
+
+function row(label, val, raw = false) {
+  return `<div class="answer-row">
+    <span class="answer-label">${label}</span>
+    <span class="answer-val">${raw ? val : `<span>${val}</span>`}</span>
+  </div>`;
+}
+
+function esc(s) {
+  return String(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+}
+</script>
+</body>
+</html>

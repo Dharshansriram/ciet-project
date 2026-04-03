@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <link rel="stylesheet" href="css/tokens.css"/>
+  <title>Aptitude Quiz | CIET Placement</title>
+  <style>
+    /**
+     * aptitude-quiz.html — inline styles
+     * Uses design tokens from tokens.css.
+     * All var() references use the short aliases (--surface, --border, etc.)
+     * which are defined in tokens.css as aliases for --c-* variables.
+     */
+
+    html, body {
+      height: 100%;
+      overflow: hidden;
+      font-family: var(--font-sans);
+      font-size: 14px;
+      background: var(--bg);
+      color: var(--text);
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ── Topbar ── */
+    .topbar {
+      flex-shrink: 0;
+      height: var(--topbar-h);
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      padding: 0 16px;
+      gap: 12px;
+    }
+    .back-btn {
+      background: none; border: none;
+      color: var(--accent); font-size: 0.875rem; font-weight: 600;
+      cursor: pointer; font-family: var(--font-sans); padding: 4px 0;
+    }
+    .back-btn:hover { text-decoration: underline; }
+    .breadcrumb {
+      flex: 1; display: flex; align-items: center;
+      gap: 6px; font-size: 0.8rem; overflow: hidden;
+    }
+    .bc-sep  { color: var(--border); }
+    .bc-topic { color: var(--accent); font-weight: 700; white-space: nowrap; }
+    .topbar-right { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+    .timer-badge {
+      font-size: 0.75rem; font-weight: 700;
+      color: var(--yellow);
+      background: rgba(210,153,34,0.12);
+      border: 1px solid rgba(210,153,34,0.3);
+      padding: 4px 10px; border-radius: 20px;
+    }
+    .q-progress-badge { font-size: 0.75rem; font-weight: 700; color: var(--muted); }
+
+    /* ── Q-Nav ── */
+    .q-nav {
+      flex-shrink: 0;
+      height: var(--qnav-h);
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      display: flex; align-items: center;
+      padding: 0 16px; gap: 6px;
+      overflow-x: auto;
+      scrollbar-width: thin;
+      scrollbar-color: var(--border) transparent;
+    }
+    .q-dot {
+      flex-shrink: 0;
+      width: 32px; height: 32px;
+      border-radius: var(--radius);
+      border: 1.5px solid var(--border);
+      background: var(--panel);
+      cursor: pointer;
+      font-size: 0.75rem; font-weight: 700;
+      color: var(--muted);
+      display: flex; align-items: center; justify-content: center;
+      transition: all 150ms ease;
+      font-family: var(--font-sans);
+    }
+    .q-dot:hover                 { border-color: var(--accent); color: var(--accent); }
+    .q-dot[data-state="active"]  { border-color: var(--accent); background: rgba(47,129,247,0.15); color: var(--accent); }
+    .q-dot[data-state="pass"]    { border-color: var(--green);  background: rgba(63,185,80,0.12);  color: var(--green); }
+    .q-dot[data-state="fail"]    { border-color: var(--red);    background: rgba(248,81,73,0.1);   color: var(--red); }
+
+    /* ── Main content ── */
+    .main-area {
+      flex: 1; overflow-y: auto;
+      padding: 24px 20px;
+      scrollbar-width: thin;
+      scrollbar-color: var(--border) transparent;
+    }
+    .quiz-wrap { max-width: 720px; margin: 0 auto; }
+
+    /* ── Question Card ── */
+    .q-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      margin-bottom: 16px;
+    }
+    .q-meta {
+      display: flex; align-items: center; gap: 8px;
+      margin-bottom: 14px;
+    }
+    .q-num {
+      font-size: 0.7rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.8px;
+      color: var(--accent);
+      background: rgba(47,129,247,0.1);
+      border: 1px solid rgba(47,129,247,0.25);
+      padding: 3px 8px; border-radius: 20px;
+    }
+    .q-topic-tag {
+      font-size: 0.7rem; font-weight: 600;
+      color: var(--muted); font-style: italic;
+    }
+    .q-text {
+      font-size: 1rem; font-weight: 600;
+      line-height: 1.65; margin-bottom: 18px;
+    }
+
+    /* ── Options ── */
+    .options { display: flex; flex-direction: column; gap: 10px; }
+    .option {
+      display: flex; align-items: flex-start; gap: 12px;
+      padding: 12px 16px;
+      border-radius: var(--radius);
+      border: 1.5px solid var(--border);
+      cursor: pointer;
+      font-size: 0.9rem; line-height: 1.55;
+      background: var(--panel);
+      transition: all 150ms ease;
+    }
+    .option:not(.locked):hover { border-color: var(--accent); background: rgba(47,129,247,0.06); }
+    .option.selected { border-color: var(--accent); background: rgba(47,129,247,0.1); }
+    .option.correct  { border-color: var(--green) !important; background: rgba(63,185,80,0.1) !important; }
+    .option.wrong    { border-color: var(--red)   !important; background: rgba(248,81,73,0.07) !important; }
+    .option.locked   { cursor: default; }
+
+    .opt-letter {
+      width: 28px; height: 28px; border-radius: 50%;
+      background: var(--input);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.75rem; font-weight: 700;
+      flex-shrink: 0; margin-top: 1px;
+    }
+
+    /* ── Explanation ── */
+    .explanation {
+      margin-top: 14px;
+      padding: 12px 16px;
+      border-radius: var(--radius);
+      font-size: 0.875rem; line-height: 1.65;
+    }
+    .explanation.correct { background: rgba(63,185,80,0.08); color: var(--green); border: 1px solid rgba(63,185,80,0.25); }
+    .explanation.wrong   { background: rgba(248,81,73,0.07); color: var(--text);  border: 1px solid rgba(248,81,73,0.25); }
+
+    /* ── Submit row ── */
+    .submit-row { margin-top: 14px; }
+
+    /* ── Bottom bar ── */
+    .bottom-bar {
+      flex-shrink: 0;
+      height: var(--bottom-h);
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      display: flex; align-items: center;
+      justify-content: space-between;
+      padding: 0 20px;
+    }
+    .progress-track { display: flex; gap: 5px; align-items: center; }
+    .p-dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: var(--border);
+      transition: all 150ms ease;
+    }
+    .p-dot.active { background: var(--accent); width: 20px; border-radius: 4px; }
+    .p-dot.pass   { background: var(--green); }
+    .p-dot.fail   { background: var(--red); }
+
+    /* ── Buttons ── */
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center;
+      padding: 7px 16px;
+      border-radius: var(--radius);
+      font-size: 0.875rem; font-weight: 600;
+      font-family: var(--font-sans);
+      cursor: pointer; border: none;
+      transition: all 150ms ease; white-space: nowrap;
+    }
+    .btn:disabled { opacity: 0.4; cursor: not-allowed; }
+    .btn-primary { background: var(--accent); color: #fff; }
+    .btn-primary:hover:not(:disabled) { filter: brightness(1.1); }
+    .btn-ghost   { background: transparent; color: var(--muted); border: 1px solid var(--border); }
+    .btn-ghost:hover:not(:disabled) { border-color: var(--accent); color: var(--accent); }
+
+    /* ── Toast ── */
+    .toast {
+      position: fixed;
+      bottom: calc(var(--bottom-h) + 12px);
+      left: 50%; transform: translateX(-50%);
+      padding: 9px 18px; border-radius: var(--radius);
+      font-size: 0.875rem; font-weight: 600;
+      z-index: 9000; pointer-events: none;
+      animation: toastIn 0.25s ease;
+      font-family: var(--font-sans);
+    }
+    .toast.pass   { background: rgba(63,185,80,0.92);  color: #fff; }
+    .toast.fail   { background: rgba(248,81,73,0.92);  color: #fff; }
+    .toast.info   { background: rgba(47,129,247,0.92); color: #fff; }
+    .toast.hidden { display: none; }
+    @keyframes toastIn { from { opacity:0; transform: translateX(-50%) translateY(8px); } to { opacity:1; transform: translateX(-50%) translateY(0); } }
+
+    /* ── Modal ── */
+    .modal-overlay {
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.72);
+      backdrop-filter: blur(6px);
+      display: flex; align-items: center; justify-content: center;
+      z-index: 9999;
+    }
+    .modal-overlay.hidden { display: none; }
+    .modal-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 40px 32px;
+      max-width: 440px; width: calc(100% - 32px);
+      text-align: center;
+      animation: modalIn 0.25s ease;
+    }
+    @keyframes modalIn { from { transform:scale(0.9); opacity:0; } to { transform:scale(1); opacity:1; } }
+    .modal-emoji  { font-size: 3rem; margin-bottom: 12px; }
+    .modal-title  { font-size: 1.4rem; font-weight: 800; margin-bottom: 6px; }
+    .modal-body   { color: var(--muted); font-size: 0.9rem; margin-bottom: 20px; }
+    .score-display { font-size: 2rem; font-weight: 800; color: var(--accent); margin-bottom: 24px; }
+    .modal-actions { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+
+    /* ── Responsive ── */
+    @media (max-width: 600px) {
+      .main-area { padding: 16px 12px; }
+      .q-card    { padding: 16px; }
+      .q-text    { font-size: 0.925rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Topbar -->
+<header class="topbar">
+  <button class="back-btn" onclick="history.back()">← Back</button>
+  <nav class="breadcrumb">
+    <span class="bc-topic" id="bcTopic"></span>
+    <span class="bc-sep">›</span>
+    <span style="color:var(--muted)">MCQ Practice</span>
+  </nav>
+  <div class="topbar-right">
+    <span class="timer-badge" id="timerBadge">⏱ 0:00</span>
+    <span class="q-progress-badge" id="qProgress"></span>
+  </div>
+</header>
+
+<!-- Q-Nav -->
+<nav class="q-nav" id="qNav" aria-label="Question navigation"></nav>
+
+<!-- Main content -->
+<div class="main-area">
+  <div class="quiz-wrap" id="quizWrap">
+    <p style="color:var(--muted);text-align:center;padding:40px 0">Loading questions…</p>
+  </div>
+</div>
+
+<!-- Bottom bar -->
+<footer class="bottom-bar">
+  <button class="btn btn-ghost" id="prevBtn" onclick="prevQuestion()" disabled>← Previous</button>
+  <div class="progress-track" id="progressTrack"></div>
+  <button class="btn btn-primary" id="nextBtn" onclick="nextQuestion()">Next →</button>
+</footer>
+
+<!-- Toast -->
+<div id="toast" class="toast hidden" role="alert" aria-live="polite"></div>
+
+<!-- Completion Modal -->
+<div id="completionModal" class="modal-overlay hidden" role="dialog" aria-modal="true">
+  <div class="modal-box">
+    <div class="modal-emoji" id="modalEmoji">🎉</div>
+    <h2 class="modal-title" id="modalTitle">Quiz Complete!</h2>
+    <p  class="modal-body"  id="modalBody"></p>
+    <div class="score-display" id="scoreDisplay"></div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost"   onclick="closeModal()">Review</button>
+      <button class="btn btn-primary" onclick="history.back()">Back to Topics</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/**
+ * Aptitude Quiz Controller
+ * -------------------------
+ * Same API layer and state pattern as dsa-phase.js.
+ * State is a single object. API calls return {ok, data, error}.
+ * No page reloads. Answers preserved on navigation.
+ */
+"use strict";
+
+const API_BASE = "http://localhost:5000/api/training";
+const _p       = new URLSearchParams(location.search);
+const TOPIC    = _p.get("topic") || "Ratio & Proportion";
+
+const state = {
+  questions:    [],
+  currentIndex: 0,
+  answers:      {},   // { [index]: { submitted, selectedIdx, correct, explanation } }
+  timerSec:     0,
+  timerInterval:null,
+  toastTimer:   null,
+};
+
+const api = {
+  async call(method, path, body) {
+    try {
+      const res  = await fetch(`${API_BASE}${path}`, {
+        method,
+        headers: { "Content-Type": "application/json" },
+        body:    body ? JSON.stringify(body) : undefined,
+      });
+      const data = await res.json();
+      if (!res.ok || !data.success) return { ok:false, data:null, error: data.message || `HTTP ${res.status}` };
+      return { ok:true, data, error:null };
+    } catch(err) {
+      return { ok:false, data:null, error: "Backend offline. Run: cd Backend && npm run dev" };
+    }
+  },
+  get:  (path)       => api.call("GET",  path),
+  post: (path, body) => api.call("POST", path, body),
+};
+
+// ── Init ──────────────────────────────────────────────────────────
+document.addEventListener("DOMContentLoaded", () => {
+  document.getElementById("bcTopic").textContent = TOPIC;
+  loadQuestions();
+  startTimer();
+});
+
+async function loadQuestions() {
+  const { ok, data, error } = await api.get(`/aptitude/questions/${encodeURIComponent(TOPIC)}`);
+  if (!ok || !data.questions?.length) {
+    document.getElementById("quizWrap").innerHTML =
+      `<p style="color:var(--muted);text-align:center;padding:40px 0">${ok ? "No questions found." : `⚠️ ${esc(error)}`}</p>`;
+    return;
+  }
+  state.questions = data.questions;
+  renderQNav();
+  renderProgressTrack();
+  navigateTo(0);
+}
+
+// ── Timer ─────────────────────────────────────────────────────────
+function startTimer() {
+  state.timerInterval = setInterval(() => {
+    state.timerSec++;
+    const m = Math.floor(state.timerSec / 60);
+    const s = state.timerSec % 60;
+    document.getElementById("timerBadge").textContent = `⏱ ${m}:${String(s).padStart(2, "0")}`;
+  }, 1000);
+}
+
+// ── Navigation ────────────────────────────────────────────────────
+function navigateTo(idx) {
+  if (idx < 0 || idx >= state.questions.length) return;
+  state.currentIndex = idx;
+  document.getElementById("prevBtn").disabled    = idx === 0;
+  document.getElementById("nextBtn").textContent = idx === state.questions.length - 1 ? "Finish ✓" : "Next →";
+  document.getElementById("qProgress").textContent = `${idx+1} / ${state.questions.length}`;
+  updateQNav();
+  updateProgressTrack();
+  renderQuestion(idx);
+  document.querySelector(".main-area").scrollTop = 0;
+}
+
+function prevQuestion() { navigateTo(state.currentIndex - 1); }
+function nextQuestion() {
+  if (state.currentIndex < state.questions.length - 1) navigateTo(state.currentIndex + 1);
+  else finishQuiz();
+}
+
+// ── Q-Nav ─────────────────────────────────────────────────────────
+function renderQNav() {
+  const nav = document.getElementById("qNav");
+  nav.innerHTML = "";
+  state.questions.forEach((_, i) => {
+    const d = document.createElement("div");
+    d.className = "q-dot"; d.dataset.i = i; d.textContent = i + 1;
+    d.addEventListener("click", () => navigateTo(i));
+    nav.appendChild(d);
+  });
+}
+function updateQNav() {
+  document.querySelectorAll(".q-dot").forEach((d, i) => {
+    const a = state.answers[i];
+    d.dataset.state = i === state.currentIndex ? "active" : a?.correct===true ? "pass" : a?.correct===false ? "fail" : "";
+  });
+}
+function renderProgressTrack() {
+  const t = document.getElementById("progressTrack"); t.innerHTML = "";
+  state.questions.forEach((_, i) => {
+    const d = document.createElement("div"); d.className="p-dot"; d.dataset.pi=i; t.appendChild(d);
+  });
+}
+function updateProgressTrack() {
+  document.querySelectorAll(".p-dot").forEach((d, i) => {
+    const a = state.answers[i];
+    d.className = "p-dot" + (i===state.currentIndex?" active":a?.correct===true?" pass":a?.correct===false?" fail":"");
+  });
+}
+
+// ── Render Question ───────────────────────────────────────────────
+function renderQuestion(idx) {
+  const q     = state.questions[idx];
+  const saved = state.answers[idx];
+  const wrap  = document.getElementById("quizWrap");
+  const L     = ["A","B","C","D"];
+
+  let html = `
+    <div class="q-card">
+      <div class="q-meta">
+        <span class="q-num">Q${idx+1}</span>
+        <span class="q-topic-tag">${esc(TOPIC)}</span>
+      </div>
+      <div class="q-text">${esc(q.question)}</div>
+      <div class="options" id="optWrap">`;
+
+  (q.options || []).forEach((text, i) => {
+    const cls = ["option"];
+    if (saved?.submitted) {
+      cls.push("locked");
+      if (i === q.answer)        cls.push("correct");
+      else if (i === saved.selectedIdx && saved.selectedIdx !== q.answer) cls.push("wrong");
+    } else if (saved?.selectedIdx === i) {
+      cls.push("selected");
+    }
+    html += `<div class="${cls.join(" ")}" data-opt="${i}">
+      <span class="opt-letter">${L[i]}</span>
+      <span>${esc(text)}</span>
+    </div>`;
+  });
+
+  html += `</div>`;
+
+  if (saved?.submitted) {
+    const isCorrect = saved.correct;
+    html += `<div class="explanation ${isCorrect?`correct`:`wrong`}>
+      ${isCorrect?`✅ Correct! `:`❌ Wrong. Correct: ${L[q.answer]} — ${esc(q.options?.[q.answer]||"")}.`}
+      ${esc(saved.explanation || "")}
+    </div>`;
+    // Fix the template literal in the above (it won't work server-rendered)
+    // We'll fix this by building it properly:
+  } else {
+    html += `<div class="submit-row">
+      <button class="btn btn-primary" id="subBtn">Submit Answer</button>
+    </div>`;
+  }
+  html += `</div>`;
+
+  wrap.innerHTML = html;
+
+  // Fix the explanation for submitted state (rebuild properly)
+  if (saved?.submitted) {
+    const expEl = wrap.querySelector(".explanation");
+    if (expEl) {
+      const isCorrect = saved.correct;
+      expEl.innerHTML = isCorrect
+        ? `✅ Correct! ${esc(saved.explanation || "")}`
+        : `❌ Wrong. Correct answer: <strong>${L[q.answer]} — ${esc((q.options||[])[q.answer]||"")}</strong><br/>${esc(saved.explanation || "")}`;
+    }
+  }
+
+  // Wire option clicks
+  if (!saved?.submitted) {
+    wrap.querySelectorAll(".option").forEach((el) => {
+      el.addEventListener("click", () => selectOption(idx, Number(el.dataset.opt)));
+    });
+    document.getElementById("subBtn")?.addEventListener("click", () => submitAnswer(idx, q));
+  }
+}
+
+function selectOption(idx, optIdx) {
+  if (!state.answers[idx]) state.answers[idx] = {};
+  state.answers[idx].selectedIdx = optIdx;
+  document.querySelectorAll(".option").forEach((el) => el.classList.remove("selected"));
+  document.querySelector(`.option[data-opt="${optIdx}"]`)?.classList.add("selected");
+}
+
+async function submitAnswer(idx, q) {
+  const sel = state.answers[idx]?.selectedIdx;
+  if (sel === undefined) { showToast("Select an option first", "info"); return; }
+
+  const btn = document.getElementById("subBtn");
+  btn.disabled = true; btn.textContent = "Checking…";
+
+  const { ok, data, error } = await api.post("/aptitude/check", {
+    topicName:     TOPIC,
+    questionId:    q.id,
+    selectedIndex: sel,
+  });
+
+  let correct, explanation;
+  if (ok) {
+    correct     = data.correct;
+    explanation = data.explanation;
+    // Server sends correct answer index — use it for display
+    q.answer    = data.correctIndex; // patch locally for visual rendering
+  } else {
+    correct     = (sel === q.answer);
+    explanation = q.explanation || "";
+    if (error) showToast("⚠️ Offline — checking locally", "info");
+  }
+
+  state.answers[idx] = { submitted:true, selectedIdx:sel, correct, explanation };
+  saveProgress();
+
+  // Re-render to show result (clean re-render, no partial DOM hacks)
+  renderQuestion(idx);
+  updateQNav();
+  updateProgressTrack();
+
+  showToast(correct ? "✅ Correct!" : "❌ Wrong answer", correct ? "pass" : "fail");
+}
+
+// ── Finish Quiz ───────────────────────────────────────────────────
+function finishQuiz() {
+  clearInterval(state.timerInterval);
+  const total   = state.questions.length;
+  const correct = Object.values(state.answers).filter(a => a?.correct).length;
+  const pct     = total > 0 ? Math.round(correct / total * 100) : 0;
+
+  document.getElementById("modalEmoji").textContent  = pct >= 80 ? "🎉" : "📚";
+  document.getElementById("modalTitle").textContent  = pct >= 80 ? "Excellent!" : pct >= 60 ? "Good Job!" : "Keep Practicing!";
+  document.getElementById("modalBody").textContent   = `${correct} / ${total} correct  •  ${document.getElementById("timerBadge").textContent.slice(2)}`;
+  document.getElementById("scoreDisplay").textContent = `${pct}%`;
+  document.getElementById("completionModal").classList.remove("hidden");
+}
+
+function closeModal() { document.getElementById("completionModal").classList.add("hidden"); }
+
+// ── Progress ──────────────────────────────────────────────────────
+function saveProgress() {
+  try {
+    const all  = JSON.parse(localStorage.getItem("ciet_progress") || "{}");
+    const done = Object.values(state.answers).filter(a => a?.correct).length;
+    all[`apt::${TOPIC}`] = { correct:done, total:state.questions.length, ts:Date.now() };
+    localStorage.setItem("ciet_progress", JSON.stringify(all));
+  } catch(_) {}
+}
+
+// ── Toast ─────────────────────────────────────────────────────────
+function showToast(msg, type="info") {
+  const t = document.getElementById("toast");
+  t.textContent = msg; t.className = `toast ${type}`;
+  clearTimeout(state.toastTimer);
+  state.toastTimer = setTimeout(() => t.classList.add("hidden"), 2800);
+}
+
+// ── Utility ───────────────────────────────────────────────────────
+function esc(s) {
+  return String(s || "")
+    .replace(/&/g,"&amp;").replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#39;");
+}
+</script>
+</body>
+</html>

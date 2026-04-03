@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CIET Learning | Login</title>
+    <link rel="icon" href="assets/ciet-logo.img.png" sizes="32x32">
+    <link rel="apple-touch-icon" href="assets/ciet-logo.img.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin:0; padding:0; box-sizing:border-box; font-family:'Poppins',sans-serif; }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #1a1a2e;
+            padding: 20px;
+        }
+
+        /* ── Wrapper ── */
+        .auth-wrapper {
+            position: relative;
+            width: 100%;
+            max-width: 860px;
+            min-height: 560px;
+            border: 2px solid #c9a227;
+            box-shadow: 0 0 30px rgba(201,162,39,0.35), 0 0 60px rgba(201,162,39,0.1);
+            overflow: hidden;
+            border-radius: 4px;
+        }
+
+        /* ── Animated background shapes ── */
+        .bg-shape {
+            position: absolute;
+            right: 0; top: -5px;
+            height: 660px; width: 960px;
+            background: linear-gradient(45deg, #1a1a2e, #c9a227);
+            transform: rotate(10deg) skewY(40deg);
+            transform-origin: bottom right;
+            transition: 1.5s ease;
+            transition-delay: 1.6s;
+            z-index: 2;
+            pointer-events: none;
+        }
+        .auth-wrapper.toggled .bg-shape {
+            transform: rotate(0deg) skewY(0deg);
+            transition-delay: .5s;
+        }
+
+        .bg-shape2 {
+            position: absolute;
+            left: 250px; top: 100%;
+            height: 760px; width: 960px;
+            background: #1a1a2e;
+            border-top: 3px solid #c9a227;
+            transform: rotate(0deg) skewY(0deg);
+            transform-origin: bottom left;
+            transition: 1.5s ease;
+            transition-delay: .5s;
+            z-index: 2;
+            pointer-events: none;
+        }
+        .auth-wrapper.toggled .bg-shape2 {
+            transform: rotate(-11deg) skewY(-41deg);
+            transition-delay: 1.2s;
+        }
+
+        /* ── Panels ── */
+        .panel {
+            position: absolute;
+            top: 0;
+            width: 50%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            color: #fff;
+            z-index: 10;
+             padding-bottom: 40px;
+        }
+
+        /* LOGIN panel — left side */
+        .login-panel {
+            left: 0;
+            padding: 0 44px;
+        }
+        .login-panel .se {
+            transform: translateX(0);
+            opacity: 1;
+            transition: .7s ease;
+        }
+        .login-panel .se:nth-child(1) { transition-delay: 2.0s; }
+        .login-panel .se:nth-child(2) { transition-delay: 2.1s; }
+        .login-panel .se:nth-child(3) { transition-delay: 2.2s; }
+        .login-panel .se:nth-child(4) { transition-delay: 2.3s; }
+        .login-panel .se:nth-child(5) { transition-delay: 2.4s; }
+
+        .auth-wrapper.toggled .login-panel .se {
+            transform: translateX(-130%);
+            opacity: 0;
+        }
+        .auth-wrapper.toggled .login-panel .se:nth-child(1) { transition-delay: 0s; }
+        .auth-wrapper.toggled .login-panel .se:nth-child(2) { transition-delay: 0.08s; }
+        .auth-wrapper.toggled .login-panel .se:nth-child(3) { transition-delay: 0.16s; }
+        .auth-wrapper.toggled .login-panel .se:nth-child(4) { transition-delay: 0.24s; }
+        .auth-wrapper.toggled .login-panel .se:nth-child(5) { transition-delay: 0.32s; }
+
+        /* SIGNUP panel — right side */
+        .signup-panel {
+            right: 0;
+            padding: 0 44px;
+        }
+        .signup-panel .se {
+            transform: translateX(130%);
+            opacity: 0;
+            filter: blur(8px);
+            transition: .7s ease;
+        }
+        .signup-panel .se:nth-child(1) { transition-delay: 0s; }
+        .signup-panel .se:nth-child(2) { transition-delay: 0.08s; }
+        .signup-panel .se:nth-child(3) { transition-delay: 0.16s; }
+        .signup-panel .se:nth-child(4) { transition-delay: 0.24s; }
+        .signup-panel .se:nth-child(5) { transition-delay: 0.32s; }
+        .signup-panel .se:nth-child(6) { transition-delay: 0.40s; }
+        .signup-panel .se:nth-child(7) { transition-delay: 0.48s; }
+        .signup-panel .se:nth-child(8) { transition-delay: 0.56s; }
+
+        .auth-wrapper.toggled .signup-panel .se {
+            transform: translateX(0);
+            opacity: 1;
+            filter: blur(0);
+        }
+        .auth-wrapper.toggled .signup-panel .se:nth-child(1) { transition-delay: 1.7s; }
+        .auth-wrapper.toggled .signup-panel .se:nth-child(2) { transition-delay: 1.78s; }
+        .auth-wrapper.toggled .signup-panel .se:nth-child(3) { transition-delay: 1.86s; }
+        .auth-wrapper.toggled .signup-panel .se:nth-child(4) { transition-delay: 1.94s; }
+        .auth-wrapper.toggled .signup-panel .se:nth-child(5) { transition-delay: 2.02s; }
+        .auth-wrapper.toggled .signup-panel .se:nth-child(6) { transition-delay: 2.10s; }
+        .auth-wrapper.toggled .signup-panel .se:nth-child(7) { transition-delay: 2.18s; }
+        .auth-wrapper.toggled .signup-panel .se:nth-child(8) { transition-delay: 2.26s; }
+
+        /* ── Welcome sections ── */
+        .welcome {
+            position: absolute;
+            top: 0;
+            height: 100%;
+            width: 50%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            color: #fff;
+            z-index: 4;
+        }
+        .welcome-login {
+            right: 0;
+            text-align: right;
+            padding: 0 44px 60px 120px;
+        }
+        .welcome-login .se {
+            transform: translateX(0);
+            opacity: 1;
+            transition: .7s ease;
+        }
+        .welcome-login .se:nth-child(1) { transition-delay: 2.0s; }
+        .welcome-login .se:nth-child(2) { transition-delay: 2.1s; }
+
+        .auth-wrapper.toggled .welcome-login .se {
+            transform: translateX(130%);
+            opacity: 0;
+        }
+        .auth-wrapper.toggled .welcome-login .se:nth-child(1) { transition-delay: 0s; }
+        .auth-wrapper.toggled .welcome-login .se:nth-child(2) { transition-delay: 0.08s; }
+
+        .welcome-signup {
+            left: 0;
+            text-align: left;
+            padding: 0 120px 60px 44px;
+            pointer-events: none;
+        }
+        .welcome-signup .se {
+            transform: translateX(-130%);
+            opacity: 0;
+            filter: blur(8px);
+            transition: .7s ease;
+        }
+        .welcome-signup .se:nth-child(1) { transition-delay: 0s; }
+        .welcome-signup .se:nth-child(2) { transition-delay: 0.08s; }
+
+        .auth-wrapper.toggled .welcome-signup .se {
+            transform: translateX(0);
+            opacity: 1;
+            filter: blur(0);
+        }
+        .auth-wrapper.toggled .welcome-signup .se:nth-child(1) { transition-delay: 1.7s; }
+        .auth-wrapper.toggled .welcome-signup .se:nth-child(2) { transition-delay: 1.8s; }
+
+        .welcome h2 {
+            font-size: 32px;
+            font-weight: 700;
+            line-height: 1.3;
+            color: #fff;
+        }
+        .welcome p {
+            font-size: 13px;
+            color: rgba(255,255,255,0.7);
+            margin-top: 8px;
+        }
+
+        /* ── Logo in welcome ── */
+        
+
+        /* ── Panel heading ── */
+        .panel h2 {
+            font-size: 26px;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 6px;
+        }
+        .panel .subtitle {
+            font-size: 13px;
+            color: rgba(255,255,255,0.6);
+            margin-bottom: 4px;
+        }
+
+        /* ── Field ── */
+        .field {
+            position: relative;
+            width: 100%;
+            height: 46px;
+            margin-top: 18px;
+        }
+        .field {
+    position: relative;
+}
+
+/* Custom dropdown arrow */
+.field:has(select)::after {
+    content: "▾";
+    position: absolute;
+    right: 6px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #c9a227;
+    font-size: 14px;
+    pointer-events: none;
+}
+
+        .field input {
+            width: 100%;
+            height: 100%;
+            background: transparent;
+            border: none;
+            border-bottom: 1.5px solid rgba(255,255,255,0.5);
+            outline: none;
+            font-size: 14px;
+            color: #fff;
+            font-weight: 500;
+            padding-right: 4px;
+            transition: .4s;
+            font-family: 'Poppins', sans-serif;
+        }
+        /* Eye icon inside password field */
+.toggle-pass{
+    position: absolute;
+    right: 6px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    font-size: 14px;
+    color: rgba(255,255,255,0.6);
+    user-select: none;
+}
+
+/* give space so text doesn't overlap icon */
+.field input[type="password"],
+.field input[type="text"]{
+    padding-right: 28px;
+}
+        .field input::placeholder { color: rgba(255,255,255,0.45); font-size: 13px; }
+        .field input:focus { border-bottom-color: #c9a227; }
+
+        /* ── Select styled like input ── */
+        .field select {
+    width: 100%;
+    height: 100%;
+    background: transparent;
+    border: none;
+    border-bottom: 1.5px solid rgba(255,255,255,0.5);
+    outline: none;
+    font-size: 13px;
+    color: rgba(255,255,255,0.8);
+    font-weight: 500;
+    cursor: pointer;
+    transition: .4s;
+    font-family: 'Poppins', sans-serif;
+    appearance: none;
+    -webkit-appearance: none;
+    padding-right: 18px;   /* space for arrow */
+}
+        .field select option { background: #1a2750; color: #fff; }
+        .field select:focus { border-bottom-color: #c9a227; }
+
+        /* Two selects side by side */
+        .field-row { display: flex; gap: 16px; margin-top: 18px; }
+        .field-row .field { margin-top: 0; }
+
+        /* ── Submit button ── */
+        .auth-btn {
+            position: relative;
+            width: 100%;
+            height: 42px;
+            margin-top: 22px;
+            background: transparent;
+            border: 2px solid #c9a227;
+            border-radius: 40px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            color: #fff;
+            overflow: hidden;
+            z-index: 1;
+            font-family: 'Poppins', sans-serif;
+            letter-spacing: 0.5px;
+            transition: color .3s;
+        }
+        .auth-btn::before {
+            content: "";
+            position: absolute;
+            height: 300%; width: 100%;
+            background: linear-gradient(#1a1a2e, #c9a227, #1a1a2e, #c9a227);
+            top: -100%; left: 0;
+            z-index: -1;
+            transition: .5s;
+        }
+        .auth-btn:hover::before { top: 0; }
+        .auth-btn:disabled { opacity: .6; cursor: not-allowed; }
+
+        /* ── Switch link ── */
+        .switch-link {
+            text-align: center;
+            margin-top: 16px;
+            font-size: 12px;
+            color: rgba(255,255,255,0.6);
+        }
+        .switch-link span {
+            color: #c9a227;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        .switch-link span:hover { text-decoration: underline; }
+
+        /* ── Error message ── */
+        .auth-error {
+            background: rgba(239,68,68,0.15);
+            border: 1px solid rgba(239,68,68,0.3);
+            border-radius: 8px;
+            padding: 8px 12px;
+            font-size: 12px;
+            color: #fca5a5;
+            margin-top: 10px;
+            display: none;
+        }
+        .auth-error.show { display: block; }
+
+        /* ── Welcome overlay (after login/signup success) ── */
+        .welcome-overlay {
+            position: fixed; inset: 0;
+            background: rgba(26,26,46,0.97);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity .5s ease;
+        }
+        .welcome-overlay.show { opacity: 1; pointer-events: all; }
+        .welcome-overlay h1 { color: #f0d060; font-size: 2rem; margin-bottom: 10px; }
+        .welcome-overlay p  { color: rgba(255,255,255,0.6); font-size: 14px; }
+        .welcome-overlay .loader-ring {
+            width: 48px; height: 48px;
+            border: 3px solid rgba(201,162,39,0.2);
+            border-top-color: #c9a227;
+            border-radius: 50%;
+            animation: spin .8s linear infinite;
+            margin-bottom: 20px;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* ════════════════════════════════════════════
+           RESPONSIVE MEDIA QUERIES — ADDED ONLY
+           Everything above is untouched from original
+        ════════════════════════════════════════════ */
+
+        /* Tablet: 681px – 860px (keeps split layout, scales down) */
+        @media (min-width: 681px) and (max-width: 860px) {
+            .auth-wrapper { min-height: 500px; }
+            .welcome-logo { width: 110px; height: 110px; }
+            .welcome h2 { font-size: 26px; }
+            .welcome-login  { padding: 0 28px 40px 80px; }
+            .welcome-signup { padding: 0 80px 40px 28px; }
+            .login-panel  { padding: 0 32px; }
+            .signup-panel { padding: 0 28px; }
+            .panel h2 { font-size: 22px; }
+        }
+
+        /* Mobile: ≤680px (single column, full screen) */
+        @media (max-width: 680px) {
+            body {
+                padding: 0;
+                align-items: flex-start;
+                justify-content: flex-start;
+                min-height: 100dvh;
+            }
+            .auth-wrapper {
+                min-height: 100dvh;
+                height: auto;
+                border: none;
+                border-radius: 0;
+                box-shadow: none;
+                overflow: visible;
+                display: flex;
+                flex-direction: column;
+            }
+            .bg-shape, .bg-shape2, .welcome { display: none !important; }
+            .panel {
+                position: relative;
+                width: 100%;
+                height: auto;
+                min-height: 100dvh;
+                padding: 100px 28px 48px;
+                justify-content: center;
+            }
+            /* gold top bar */
+            .panel::before {
+                content: '';
+                position: fixed;
+                top: 0; left: 0; right: 0;
+                height: 3px;
+                background: linear-gradient(90deg, #c9a227, #f0d060, #c9a227);
+                z-index: 999;
+            }
+            /* CIET logo centered above form */
+            .panel::after {
+                content: '';
+                display: block;
+                width: 80px; height: 80px;
+                background: url('assets/new_logo.png') center / 80% no-repeat #fff;
+                border-radius: 50%;
+                border: 3px solid rgba(201,162,39,0.5);
+                box-shadow: 0 0 20px rgba(201,162,39,0.25);
+                position: absolute;
+                top: 14px;
+                left: 50%;
+                transform: translateX(-50%);
+            }
+            .panel h2 { text-align: center; font-size: 24px; }
+            .panel .subtitle { text-align: center; }
+            .login-panel  { display: flex; }
+            .signup-panel { display: none; }
+            .auth-wrapper.toggled .login-panel  { display: none; }
+            .auth-wrapper.toggled .signup-panel { display: flex; }
+            .panel .se {
+                transform: none !important;
+                opacity: 1 !important;
+                filter: none !important;
+                transition: none !important;
+            }
+            .auth-btn { height: 48px; font-size: 15px; margin-top: 24px; }
+            .field { height: 50px; margin-top: 20px; }
+            .field input, .field select { font-size: 15px; }
+            .switch-link { margin-top: 20px; font-size: 13px; }
+        }
+
+        /* Very small phones: ≤380px */
+        @media (max-width: 380px) {
+            .panel { padding: 100px 20px 40px; }
+            .panel h2 { font-size: 21px; }
+            /* stack dept + year selects vertically */
+            .field-row { flex-direction: column; gap: 0; }
+            .field-row .field { margin-top: 18px; }
+        }
+
+    </style>
+</head>
+<body>
+
+<div class="auth-wrapper" id="authWrapper">
+    <div class="bg-shape"></div>
+    <div class="bg-shape2"></div>
+
+    <!-- ═══ LOGIN PANEL (left) ═══ -->
+    <div class="login-panel panel">
+        <h2 class="se">Sign In</h2>
+        <p class="subtitle se">Welcome back to CIET Learning</p>
+
+        <div class="field se">
+            <input type="text" id="loginRoll" placeholder="Roll Number" autocomplete="username">
+        </div>
+        <div class="field se">
+            <input type="password" id="loginPassword" placeholder="Password" autocomplete="current-password">
+            <span class="toggle-pass" data-target="loginPassword">👁</span>
+        </div>
+
+        <div class="auth-error se" id="loginError"></div>
+
+        <button class="auth-btn se" id="loginBtn" onclick="login()">Sign In</button>
+
+        <p class="switch-link se">
+            Don't have an account?
+            <span onclick="toggleToSignup()">Create Account</span>
+        </p>
+    </div>
+
+    <!-- ═══ SIGNUP PANEL (right) ═══ -->
+    <div class="signup-panel panel">
+        <h2 class="se">Create Account</h2>
+        <p class="subtitle se">Start your learning journey</p>
+
+        <div class="field se">
+            <input type="text" id="signupName" placeholder="Full Name" autocomplete="name">
+        </div>
+        <div class="field se">
+            <input type="text" id="signupRoll" placeholder="Roll Number" autocomplete="username">
+        </div>
+        <div class="auth-error se" id="rollError"></div>
+
+        <div class="field-row se">
+            <div class="field">
+                <select id="signupDept">
+                    <option value="">Department</option>
+                    <option>CSE</option>
+                    <option>IT</option>
+                    <option>AIDS</option>
+                    <option>AIML</option>
+                    <option>CSE (CS)</option>
+                    <option>ECE</option>
+                    <option>EEE</option>
+                </select>
+            </div>
+            <div class="field">
+                <select id="signupYear">
+                    <option value="">Year</option>
+                    <option value="1">1st Year</option>
+                    <option value="2">2nd Year</option>
+                    <option value="3">3rd Year</option>
+                    <option value="4">4th Year</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="field se">
+            <input type="password" id="signupPassword" placeholder="Password" autocomplete="new-password">
+            <span class="toggle-pass" data-target="signupPassword">👁</span>
+        </div>
+        <div class="auth-error se" id="passError"></div>
+
+        <div class="field se">
+            <input type="password" id="signupConfirm" placeholder="Confirm Password" autocomplete="new-password">
+            <span class="toggle-pass" data-target="signupConfirm">👁</span>
+        </div>
+        <div class="auth-error se" id="passwordError"></div>
+
+        <div class="auth-error se" id="signupError"></div>
+
+        <button class="auth-btn se" id="signupBtn" onclick="signup()">Create Account</button>
+
+        <p class="switch-link se">
+            Already have an account?
+            <span onclick="toggleToLogin()">Sign In</span>
+        </p>
+    </div>
+
+    <!-- ═══ WELCOME — shown on login side ═══ -->
+    <div class="welcome welcome-login">
+        <img src="assets/new_logo.png" alt="CIET" class="welcome-logo se">
+        <h2 class="se">WELCOME<br>BACK!</h2>
+        <p class="se">Sign in to continue your<br>learning journey at CIET</p>
+    </div>
+
+    <!-- ═══ WELCOME — shown on signup side ═══ -->
+    <div class="welcome welcome-signup">
+        <img src="assets/new_logo.png" alt="CIET" class="welcome-logo se">
+        <h2 class="se">JOIN<br>CIET!</h2>
+        <p class="se">Create your account and<br>start your assessment journey</p>
+    </div>
+</div>
+
+<!-- Success overlay -->
+<div class="welcome-overlay" id="welcomeOverlay">
+    <div class="loader-ring"></div>
+    <h1 id="welcomeMsg"></h1>
+    <p>Redirecting to dashboard…</p>
+</div>
+
+<script src="js/api.js"></script>
+<script>
+    /* ── Password visibility toggle ── */
+    document.querySelectorAll(".toggle-pass").forEach(icon => {
+        icon.addEventListener("click", () => {
+            const input = document.getElementById(icon.dataset.target);
+            if (input.type === "password") {
+                input.type = "text";
+                icon.textContent = "👁‍🗨";
+            } else {
+                input.type = "password";
+                icon.textContent = "👁";
+            }
+        });
+    });
+
+    const authWrapper = document.getElementById("authWrapper");
+
+    function toggleToSignup() { authWrapper.classList.add("toggled"); }
+    function toggleToLogin()  { authWrapper.classList.remove("toggled"); }
+
+    /* ── AUTH LOGIC (MongoDB integrated) ── */
+    async function login() {
+        const rollNo   = document.getElementById("loginRoll").value.trim();
+        const password = document.getElementById("loginPassword").value;
+        const errEl    = document.getElementById("loginError");
+        const btn      = document.getElementById("loginBtn");
+        errEl.classList.remove("show");
+
+        if (!rollNo || !password) {
+            showError(errEl, "Please enter Roll Number and Password");
+            return;
+        }
+
+        btn.disabled = true;
+        btn.textContent = "Signing in…";
+        try {
+            const data = await apiRequest("/auth/login", "POST", { rollNo, password });
+            localStorage.setItem("token", data.token);
+            localStorage.setItem("user", JSON.stringify(data.user));
+            showWelcome(data.user.name);
+        } catch (err) {
+            showError(errEl, err.message || "Login failed. Check your credentials.");
+            btn.disabled = false;
+            btn.textContent = "Sign In";
+        }
+    }
+
+    async function signup() {
+        const name     = document.getElementById("signupName").value.trim();
+        const rollNo   = document.getElementById("signupRoll").value.trim();
+        const dept     = document.getElementById("signupDept").value;
+        const year     = document.getElementById("signupYear").value;
+        const password = document.getElementById("signupPassword").value;
+        const confirm  = document.getElementById("signupConfirm").value;
+
+        const errorDiv     = document.getElementById("signupError");
+        const rollError    = document.getElementById("rollError");
+        const passError    = document.getElementById("passError");
+        const passwordError= document.getElementById("passwordError");
+        const btn          = document.getElementById("signupBtn");
+
+        /* Clear all errors */
+        [errorDiv, rollError, passError, passwordError].forEach(el => {
+            el.textContent = "";
+            el.classList.remove("show");
+        });
+
+        if (!name || !rollNo || !dept || !year || !password || !confirm) {
+            showError(errorDiv, "Please fill in all fields");
+            return;
+        }
+
+        const rollRegex = /^(?=.*[A-Z])[A-Z0-9]+$/;
+        const special   = /[!@#$%^&*]/;
+        let hasError    = false;
+
+        if (!rollRegex.test(rollNo)) {
+            showError(rollError, "❌ Roll Number must contain only CAPITAL letters and numbers");
+            hasError = true;
+        }
+
+        if (password.length !== 8) {
+            showError(passError, "❌ Password must be exactly 8 characters");
+            hasError = true;
+        }
+
+        if (!special.test(password)) {
+            showError(passError, "❌ Password must contain a special character (!@#$%^&*)");
+            hasError = true;
+        }
+
+        if (password !== confirm) {
+            showError(passwordError, "❌ Passwords do not match");
+            hasError = true;
+        }
+
+        if (hasError) return;
+
+        btn.disabled = true;
+        btn.textContent = "Creating account…";
+        try {
+            const data = await apiRequest("/auth/register", "POST",
+                { name, rollNo, dept, year, password });
+            localStorage.setItem("token", data.token);
+            localStorage.setItem("user", JSON.stringify(data.user));
+            showWelcome(data.user.name);
+        } catch (err) {
+            showError(errorDiv, err.message || "Signup failed. Try again.");
+            btn.disabled = false;
+            btn.textContent = "Create Account";
+        }
+    }
+
+    function showError(el, msg) {
+        el.textContent = msg;
+        el.classList.add("show");
+    }
+
+    function showWelcome(name) {
+        document.getElementById("welcomeMsg").textContent = "Welcome, " + name + "!";
+        document.getElementById("welcomeOverlay").classList.add("show");
+        setTimeout(() => { window.location.href = "index.html"; }, 1600);
+    }
+
+    /* Enter key support */
+    document.getElementById("loginPassword").addEventListener("keydown", e => {
+        if (e.key === "Enter") login();
+    });
+    document.getElementById("signupConfirm").addEventListener("keydown", e => {
+        if (e.key === "Enter") signup();
+    });
+</script>
+</body>
+</html>
