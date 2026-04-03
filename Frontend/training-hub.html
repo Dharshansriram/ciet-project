@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <link rel="stylesheet" href="css/tokens.css"/>
+<title>Training Hub | CIET Placement</title>
+<link rel="stylesheet" href="css/training-hub.css"/>
+</head>
+<body>
+
+<!-- ═══ TOPBAR ════════════════════════════════════════════ -->
+<header class="topbar">
+  <div class="brand" onclick="history.back()">◀ <b>CIET</b> Training</div>
+  <div class="topbar-right">
+    <div id="progressSummary" class="progress-pill"></div>
+    <button class="btn-icon" onclick="toggleTheme()">🌙</button>
+  </div>
+</header>
+
+<!-- ═══ HERO ══════════════════════════════════════════════ -->
+<section class="hero">
+  <div class="hero-text">
+    <h1>Placement Training Hub</h1>
+    <p>Choose a topic to start practicing. Each topic has multiple subtopics with 5 progressive phases.</p>
+  </div>
+  <div class="hero-stats" id="heroStats"></div>
+</section>
+
+<!-- ═══ TAB NAV ═══════════════════════════════════════════ -->
+<nav class="tab-nav">
+  <button class="tab active" data-tab="dsa" onclick="switchTab('dsa')">
+    <span>💻</span> DSA Training
+  </button>
+  <button class="tab" data-tab="aptitude" onclick="switchTab('aptitude')">
+    <span>🔢</span> Aptitude
+  </button>
+</nav>
+
+<!-- ═══ CONTENT ═══════════════════════════════════════════ -->
+<main class="main-content">
+
+  <!-- DSA Topics Grid -->
+  <section id="dsa-section" class="topics-section">
+    <div class="section-header">
+      <h2>DSA Topics</h2>
+      <p>Click a topic to explore subtopics and 5-phase training (Objective → Code → Jumbled → Fill Blanks → Optimize)</p>
+    </div>
+    <div class="topics-grid" id="dsaGrid">
+      <div class="loading-placeholder">Loading topics...</div>
+    </div>
+  </section>
+
+  <!-- Aptitude Topics Grid -->
+  <section id="aptitude-section" class="topics-section hidden">
+    <div class="section-header">
+      <h2>Aptitude Topics</h2>
+      <p>5 scenario-based questions per topic with detailed explanations (IndiaBix / TCS style)</p>
+    </div>
+    <div class="topics-grid" id="aptGrid">
+      <div class="loading-placeholder">Loading topics...</div>
+    </div>
+  </section>
+
+</main>
+
+<!-- ═══ SUBTOPIC DRAWER ════════════════════════════════════ -->
+<div class="drawer-overlay hidden" id="drawerOverlay" onclick="closeDrawer()"></div>
+<aside class="drawer hidden" id="subtopicDrawer">
+  <div class="drawer-header">
+    <div>
+      <div class="drawer-icon" id="drawerIcon"></div>
+      <h3 id="drawerTitle">Subtopics</h3>
+      <p id="drawerDesc"></p>
+    </div>
+    <button class="btn-icon close-btn" onclick="closeDrawer()">✕</button>
+  </div>
+  <div class="drawer-body" id="drawerBody"></div>
+</aside>
+
+<script src="js/training-hub.js"></script>
+</body>
+</html>

@@ -1,0 +1,218 @@
+/* ─────────────────────────────────────────────
+   results.css  –  Results Page Styles
+───────────────────────────────────────────── */
+
+.results-page {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 80vh;
+  padding: 24px;
+}
+
+.results-card {
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+  border: 1px solid rgba(148, 163, 184, 0.12);
+  border-radius: 24px;
+  width: 100%;
+  max-width: 520px;
+  overflow: hidden;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.5);
+  animation: resCardIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes resCardIn {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* ── Header ─────────────────────────────────── */
+.res-header {
+  padding: 28px 32px 20px;
+  text-align: center;
+}
+
+.res-header.pass { background: linear-gradient(135deg, #064e3b, #065f46); }
+.res-header.fail { background: linear-gradient(135deg, #1e1b4b, #312e81); }
+
+.res-icon { font-size: 2.8rem; margin-bottom: 8px; }
+
+.res-header h2 {
+  color: #fff;
+  font-size: 1.5rem;
+  margin: 0 0 6px;
+}
+
+.res-subtitle {
+  color: rgba(255,255,255,.6);
+  font-size: 0.85rem;
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+/* ── Score Ring ─────────────────────────────── */
+.res-score-ring {
+  position: relative;
+  width: 140px;
+  height: 140px;
+  margin: 24px auto 8px;
+}
+
+.ring-svg {
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+}
+
+.ring-bg   { fill: none; stroke: rgba(255,255,255,.08); stroke-width: 10; }
+.ring-fill { fill: none; stroke-width: 10; stroke-linecap: round; transition: stroke-dasharray 1s ease; }
+
+.res-score-ring.pass .ring-fill { stroke: #10b981; }
+.res-score-ring.fail .ring-fill { stroke: #6366f1; }
+
+.ring-label {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.ring-score {
+  font-size: 2rem;
+  font-weight: 800;
+  color: #fff;
+  line-height: 1;
+}
+
+.ring-sub {
+  font-size: 0.75rem;
+  color: rgba(255,255,255,.5);
+  margin-top: 2px;
+}
+
+/* ── Stats Row ──────────────────────────────── */
+.res-stats {
+  display: flex;
+  justify-content: space-around;
+  padding: 16px 24px;
+  gap: 8px;
+  border-top: 1px solid rgba(255,255,255,.07);
+  border-bottom: 1px solid rgba(255,255,255,.07);
+}
+
+.res-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.res-stat-value {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #f1f5f9;
+}
+
+.res-stat-label {
+  font-size: 0.72rem;
+  color: rgba(255,255,255,.45);
+  text-align: center;
+}
+
+/* Grade colours */
+.grade-A\+, .grade-A { color: #10b981 !important; }
+.grade-B             { color: #60a5fa !important; }
+.grade-C             { color: #f59e0b !important; }
+.grade-F             { color: #ef4444 !important; }
+
+/* ── Banners ────────────────────────────────── */
+.res-pass-banner, .res-fail-banner {
+  margin: 18px 24px 0;
+  padding: 14px 18px;
+  border-radius: 12px;
+  font-size: 0.875rem;
+  text-align: center;
+  line-height: 1.5;
+}
+
+.res-pass-banner {
+  background: rgba(16, 185, 129, 0.12);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  color: #6ee7b7;
+}
+
+.res-fail-banner {
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.25);
+  color: #fca5a5;
+}
+
+/* ── Action Buttons ─────────────────────────── */
+.res-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding: 20px 24px 28px;
+  justify-content: center;
+}
+
+.res-btn {
+  border: none;
+  border-radius: 50px;
+  padding: 11px 22px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.2s, transform 0.15s;
+}
+
+.res-btn:hover { opacity: 0.85; transform: translateY(-1px); }
+.res-btn:active { transform: none; }
+
+.res-btn.primary {
+  background: linear-gradient(135deg, #10b981, #059669);
+  color: #fff;
+}
+
+.res-btn.secondary {
+  background: linear-gradient(135deg, #3b82f6, #2563eb);
+  color: #fff;
+}
+
+.res-btn.ghost {
+  background: rgba(255,255,255,.08);
+  color: #94a3b8;
+  border: 1px solid rgba(255,255,255,.12);
+}
+
+/* ═══════════════════════════════════
+   RESPONSIVE — RESULTS
+═══════════════════════════════════ */
+
+/* Mobile (≤600px) */
+@media (max-width: 600px) {
+    .results-page { padding: 12px; }
+    .results-card { border-radius: 18px; }
+    .res-header { padding: 22px 20px 16px; }
+    .res-header h2 { font-size: 1.3rem; }
+    .res-score-ring { width: 120px; height: 120px; }
+    .ring-score { font-size: 1.7rem; }
+    .res-stats {
+        padding: 12px 14px;
+        gap: 6px;
+        flex-wrap: wrap;
+        justify-content: space-evenly;
+    }
+    .res-stat-value { font-size: 1.1rem; }
+    .res-actions { padding: 16px 16px 22px; gap: 8px; }
+    .res-btn { padding: 10px 16px; font-size: 0.82rem; }
+}
+
+/* Very small (≤380px) */
+@media (max-width: 380px) {
+    .res-stats { grid-template-columns: repeat(3, 1fr); display: grid; }
+    .res-stat { align-items: center; }
+}

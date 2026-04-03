@@ -1,0 +1,97 @@
+/**
+ * tokens.css — Design System Tokens
+ * -----------------------------------
+ * Single source of truth for all CSS custom properties.
+ * Both --c-* prefix (dsa-phase) and short names (training-hub, aptitude)
+ * map to the same values so all pages are visually consistent.
+ *
+ * Import this file in every HTML page.
+ * Never define color/spacing values anywhere else.
+ */
+
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700;800&display=swap');
+
+:root {
+  /* ── Heights (used in JS-free layout calculations) ── */
+  --topbar-h:  54px;
+  --qnav-h:    46px;
+  --bottom-h:  54px;
+
+  /* ── Dark theme — default ── */
+
+  /* Backgrounds */
+  --c-bg:       #0d1117;
+  --c-surface:  #161b22;
+  --c-panel:    #1c2128;
+  --c-input:    #21262d;
+
+  /* Borders */
+  --c-border:   #30363d;
+
+  /* Text */
+  --c-text:     #e6edf3;
+  --c-muted:    #8b949e;
+  --c-subtle:   #6e7681;
+
+  /* Brand / Semantic */
+  --c-accent:   #2f81f7;
+  --c-green:    #3fb950;
+  --c-red:      #f85149;
+  --c-yellow:   #d29922;
+  --c-orange:   #f0883e;
+  --c-purple:   #bc8cff;
+
+  /* ── Short aliases — used by training-hub, aptitude-quiz ── */
+  /* These are identical values; the aliases just avoid refactoring existing code */
+  --bg:      var(--c-bg);
+  --surface: var(--c-surface);
+  --panel:   var(--c-panel);
+  --input:   var(--c-input);
+  --border:  var(--c-border);
+  --text:    var(--c-text);
+  --muted:   var(--c-muted);
+  --subtle:  var(--c-subtle);
+  --accent:  var(--c-accent);
+  --green:   var(--c-green);
+  --red:     var(--c-red);
+  --yellow:  var(--c-yellow);
+  --orange:  var(--c-orange);
+  --purple:  var(--c-purple);
+
+  /* ── Typography ── */
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', monospace;
+
+  /* ── Radius ── */
+  --radius:    8px;
+  --radius-lg: 12px;
+
+  /* ── Transitions ── */
+  --t: 150ms ease;
+}
+
+/* ── Light theme ── */
+.light-theme,
+body.light {
+  --c-bg:      #f6f8fa;
+  --c-surface: #ffffff;
+  --c-panel:   #f0f2f4;
+  --c-input:   #eaecef;
+  --c-border:  #d0d7de;
+  --c-text:    #1f2328;
+  --c-muted:   #636c76;
+  --c-subtle:  #818b94;
+
+  /* Keep aliases in sync */
+  --bg:      var(--c-bg);
+  --surface: var(--c-surface);
+  --panel:   var(--c-panel);
+  --input:   var(--c-input);
+  --border:  var(--c-border);
+  --text:    var(--c-text);
+  --muted:   var(--c-muted);
+  --subtle:  var(--c-subtle);
+}
+
+/* ── Reset ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
