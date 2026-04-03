@@ -122,10 +122,13 @@ function renderAptitude(q) {
       <div class="options">${optionsHtml}</div>
       <div class="q-actions">
         <button class="btn-prev" onclick="prevQuestion()" ${hasPrev?"":"disabled"}>← Previous</button>
+<<<<<<< HEAD
     <button class="btn-skip" onclick="skipQuestion()">
     ⏭ Skip
   </button>
 
+=======
+>>>>>>> cb6076f5ad69890d2218cf73b9a03da30f7ee954
         <button class="btn-next" onclick="submitAptitude(${q.correctAnswer})">
           ${idx === total-1 ? "Submit Assessment ✓" : "Next →"}
         </button>
@@ -146,7 +149,10 @@ function renderDsa(q) {
       <textarea id="codeAnswer" rows="10" placeholder="// Write your solution here..."></textarea>
       <div class="q-actions">
         <button class="btn-prev" onclick="prevQuestion()" ${hasPrev?"":"disabled"}>← Previous</button>
+<<<<<<< HEAD
     
+=======
+>>>>>>> cb6076f5ad69890d2218cf73b9a03da30f7ee954
         <button class="btn-next" onclick="submitDsa()">
           ${idx === total-1 ? "Submit Assessment ✓" : "Next →"}
         </button>

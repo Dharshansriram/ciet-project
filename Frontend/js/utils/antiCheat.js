@@ -14,6 +14,7 @@ function startAntiCheat() {
     _acActive = true;
     document.addEventListener("visibilitychange", _onVisChange);
     window.addEventListener("blur", _onBlur);
+<<<<<<< HEAD
     window.addEventListener("popstate", _onBackAttempt);
     document.addEventListener("copy",  _blockCopy);
     document.addEventListener("paste", _blockCopy);
@@ -22,13 +23,23 @@ function startAntiCheat() {
 }
     console.log("🛡️ Unified anti-cheat active");
 
+=======
+    document.addEventListener("copy",  _blockCopy);
+    document.addEventListener("paste", _blockCopy);
+    document.addEventListener("contextmenu", e => _acActive && e.preventDefault());
+    console.log("🛡️ Unified anti-cheat active");
+}
+>>>>>>> cb6076f5ad69890d2218cf73b9a03da30f7ee954
 
 function stopAntiCheat() {
     _acActive = false;
     document.removeEventListener("visibilitychange", _onVisChange);
     window.removeEventListener("blur", _onBlur);
+<<<<<<< HEAD
     window.removeEventListener("popstate", _onBackAttempt);
 
+=======
+>>>>>>> cb6076f5ad69890d2218cf73b9a03da30f7ee954
     document.removeEventListener("copy",  _blockCopy);
     document.removeEventListener("paste", _blockCopy);
 }
@@ -42,6 +53,7 @@ function _onBlur() {
     if (!_acActive) return;
     recordUnifiedViolation("tab", "Leaving the window? The clock is still ticking.");
 }
+<<<<<<< HEAD
 function _onBackAttempt() {
     if (!_acActive) return;
 
@@ -52,6 +64,8 @@ function _onBackAttempt() {
     history.pushState(null, null, location.href);
     }
 
+=======
+>>>>>>> cb6076f5ad69890d2218cf73b9a03da30f7ee954
 function _blockCopy(e) {
     if (!_acActive) return;
     e.preventDefault();

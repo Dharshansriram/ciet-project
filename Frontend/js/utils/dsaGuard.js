@@ -4,7 +4,11 @@
  * user tries to access any DSA feature.
  * NO existing code is modified here.
  *************************************************/
+<<<<<<< HEAD
 console.log("dsaGuard loaded");
+=======
+
+>>>>>>> cb6076f5ad69890d2218cf73b9a03da30f7ee954
 function showDsaUnderConstruction() {
     // Remove any existing overlay
     const existing = document.getElementById("dsaOverlay");
@@ -67,4 +71,7 @@ function showDsaUnderConstruction() {
   `;
     document.head.appendChild(s);
 })();
+<<<<<<< HEAD
 
+=======
+>>>>>>> cb6076f5ad69890d2218cf73b9a03da30f7ee954

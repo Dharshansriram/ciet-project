@@ -641,4 +641,7 @@ function saveProgress() {
 function escHtml(s) { return String(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#39;"); }
 function escAttr(s) { return escHtml(s).replace(/\n/g,"&#10;"); }
 function shuffle(a) { const b=[...a]; for(let i=b.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[b[i],b[j]]=[b[j],b[i]];} return b; }
+<<<<<<< HEAD
 
+=======
+>>>>>>> cb6076f5ad69890d2218cf73b9a03da30f7ee954

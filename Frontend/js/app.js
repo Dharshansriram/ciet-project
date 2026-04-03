@@ -1,5 +1,11 @@
+<<<<<<< HEAD
 const isDashboard = (location.hash.replace("#", "") || "dashboard") === "dashboard";
 
+=======
+if (!AppState.user) {
+    window.location.href = "auth.html";
+}
+>>>>>>> cb6076f5ad69890d2218cf73b9a03da30f7ee954
 
 // ── Initialize Socket.IO — live backend ──
 window.socket = io("https://backendciet.onrender.com");
@@ -24,16 +30,21 @@ window.closeSidebar = function() {
 };
 
 function navigate(page) {
+<<<<<<< HEAD
     if (!AppState.user && page !== "dashboard") {
         window.location.href = "auth.html";
         return;
     }
 
+=======
+    // Block sidebar nav only during an ACTIVE (not submitted) workout assessment
+>>>>>>> cb6076f5ad69890d2218cf73b9a03da30f7ee954
     const sessionActive = AppState.session &&
         AppState.session.questions.length > 0 &&
         !AppState.isSubmitting &&
         AppState.mode === "workout" &&
         AppState.timerStarted === true;
+<<<<<<< HEAD
 
     if (sessionActive && page !== "assessment" && page !== "results") {
         return;
@@ -48,6 +59,17 @@ function navigate(page) {
 
     loadPage(page);
 }
+=======
+    if (sessionActive && page !== "assessment" && page !== "results") {
+        return; // ignore mid-assessment navigation
+    }
+    closeSidebar();
+    history.pushState({ page }, "", "#" + page);
+    if (typeof window._sidebarNavigate === "function") window._sidebarNavigate(page);
+    loadPage(page);
+}
+
+>>>>>>> cb6076f5ad69890d2218cf73b9a03da30f7ee954
 /* =====================================================
    PAGE LOADER – decides which page to render
    ===================================================== */
@@ -86,6 +108,7 @@ function loadPage(page) {
 
 
 window.onpopstate = function(event) {
+<<<<<<< HEAD
     const page = event.state?.page || "dashboard";
 
     // 🔥 DASHBOARD GUARD LOGIC
@@ -116,6 +139,20 @@ loadPage(pageFromURL);
 if (pageFromURL === "dashboard") {
     history.replaceState({ page: "dashboard" }, "", "#dashboard");
 }
+=======
+    if (event.state && event.state.page) {
+        if (typeof window._sidebarNavigate === "function") window._sidebarNavigate(event.state.page);
+        loadPage(event.state.page);
+    }
+};
+
+
+
+
+const pageFromURL = location.hash.replace("#", "") || "dashboard";
+loadPage(pageFromURL);
+
+>>>>>>> cb6076f5ad69890d2218cf73b9a03da30f7ee954
 history.replaceState({ page: pageFromURL }, "", "#" + pageFromURL);
 
 

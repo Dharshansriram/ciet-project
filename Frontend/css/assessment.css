@@ -134,6 +134,7 @@
 /* Action Buttons */
 .q-actions { display: flex; gap: 12px; align-items: center; }
 
+<<<<<<< HEAD
 /* PREV */
 /* PREV (no change) */
 /* Container for proper layout */
@@ -193,6 +194,27 @@
   opacity: 0.9;
   transform: translateY(-1px);
 }
+=======
+.btn-prev {
+    padding: 12px 24px;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 12px;
+    background: #fff; color: #6b7280;
+    font-size: 14px; font-weight: 600;
+    cursor: pointer; transition: all .15s;
+}
+.btn-prev:hover:not(:disabled) { border-color: #6366f1; color: #4f46e5; background: #f5f3ff; }
+.btn-prev:disabled { opacity: .35; cursor: not-allowed; }
+
+.btn-next {
+    flex: 1; padding: 13px 28px; border: none; border-radius: 12px;
+    background: linear-gradient(135deg, #4f46e5, #6366f1);
+    color: #fff; font-size: 15px; font-weight: 700;
+    cursor: pointer; transition: opacity .15s, transform .15s;
+}
+.btn-next:hover { opacity: .9; transform: translateY(-1px); }
+
+>>>>>>> cb6076f5ad69890d2218cf73b9a03da30f7ee954
 /* Shake animation */
 @keyframes shake {
     0%,100%{transform:translateX(0)} 20%{transform:translateX(-8px)}

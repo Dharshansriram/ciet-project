@@ -51,7 +51,10 @@ window.showLogoutDialog = function() {
   if (ex) ex.remove();
   const user = AppState.user?.name?.split(" ")[0] || "there";
   const modal = document.createElement("div");
+<<<<<<< HEAD
   history.pushState(null,null, location.href);
+=======
+>>>>>>> cb6076f5ad69890d2218cf73b9a03da30f7ee954
   modal.id = "logoutModal";
   modal.style.cssText = `position:fixed;inset:0;background:rgba(0,0,0,0.75);
     backdrop-filter:blur(8px);display:flex;align-items:center;
@@ -100,6 +103,7 @@ window.confirmLogout = function() {
   localStorage.removeItem("token");
   localStorage.removeItem("user");
   sessionStorage.clear();
+<<<<<<< HEAD
   history.pushState(null,null, location.href);
   window.location.href = "auth.html";
 };
@@ -140,3 +144,8 @@ window.logoutUser = window.showLogoutDialog;
   });
 })();
 
+=======
+  window.location.href = "auth.html";
+};
+window.logoutUser = window.showLogoutDialog;
+>>>>>>> cb6076f5ad69890d2218cf73b9a03da30f7ee954
